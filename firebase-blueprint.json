@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "Information about a menu item",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "unit": { "type": "string" },
+        "description": { "type": "string" },
+        "customizable": { "type": "boolean" },
+        "options": { "type": "object" }
+      },
+      "required": ["name", "category", "price"]
+    },
+    "PortfolioPost": {
+      "title": "PortfolioPost",
+      "description": "Post for the portfolio/Instagram feed",
+      "type": "object",
+      "properties": {
+        "imageUrl": { "type": "string" },
+        "instagramLink": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["imageUrl", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order details",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerAddress": { "type": "string" },
+        "deliveryMethod": { "type": "string", "enum": ["Retirada no Local", "Uber Entrega"] },
+        "items": { "type": "array" },
+        "total": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "delivered", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "customerPhone", "items", "total", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User accounts"
+    },
+    "/menu/{itemId}": {
+      "schema": "MenuItem",
+      "description": "Editable menu items"
+    },
+    "/portfolio/{postId}": {
+      "schema": "PortfolioPost",
+      "description": "Portfolio/Instagram feed posts"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of customer orders"
+    }
+  }
+}
