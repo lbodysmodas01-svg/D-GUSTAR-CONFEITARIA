@@ -4,7 +4,7 @@ import { ProductCard } from '@/src/components/ProductCard';
 import { CartSheet } from '@/src/components/CartSheet';
 import { useCart, CartProvider } from './CartContext';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Instagram, Phone, MapPin, Clock, User, LayoutDashboard, Image as ImageIcon, LogOut } from 'lucide-react';
+import { ShoppingCart, Instagram, Phone, MapPin, Clock, User, Settings, Image as ImageIcon, LogOut } from 'lucide-react';
 import { Toaster } from 'sonner';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { SuccessPage } from './SuccessPage';
 import { AuthModal } from './components/AuthModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Portfolio } from './components/Portfolio';
-import { auth, db, getUserRole } from './firebase';
+import { auth, db, getUserRole, useAppSettings } from './firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -32,6 +32,7 @@ const AppContent = () => {
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_DATA);
+  const appSettings = useAppSettings();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
@@ -82,7 +83,24 @@ const AppContent = () => {
   const filteredItems = menuItems.filter((item) => item.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#FFF5F7] font-sans text-gray-900">
+    <div className="min-h-screen bg-pink-50 font-sans text-gray-900">
+      {appSettings.colorPalette && appSettings.colorPalette !== 'pink' && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            --color-pink-50: var(--color-${appSettings.colorPalette}-50);
+            --color-pink-100: var(--color-${appSettings.colorPalette}-100);
+            --color-pink-200: var(--color-${appSettings.colorPalette}-200);
+            --color-pink-300: var(--color-${appSettings.colorPalette}-300);
+            --color-pink-400: var(--color-${appSettings.colorPalette}-400);
+            --color-pink-500: var(--color-${appSettings.colorPalette}-500);
+            --color-pink-600: var(--color-${appSettings.colorPalette}-600);
+            --color-pink-700: var(--color-${appSettings.colorPalette}-700);
+            --color-pink-800: var(--color-${appSettings.colorPalette}-800);
+            --color-pink-900: var(--color-${appSettings.colorPalette}-900);
+            --color-pink-950: var(--color-${appSettings.colorPalette}-950);
+          }
+        `}} />
+      )}
       <Toaster position="top-center" />
       
       {/* Header */}
@@ -91,10 +109,10 @@ const AppContent = () => {
           <div className="w-12 md:w-32" /> {/* Spacer for symmetry */}
           
           <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <h1 className="text-sm md:text-lg font-black tracking-tight text-pink-600 uppercase leading-none">D'GUSTAR</h1>
+            <h1 className="text-sm md:text-lg font-black tracking-tight text-pink-600 uppercase leading-none">{appSettings.appName}</h1>
             <div className="flex items-center gap-1.5 py-0.5">
               <div className="h-[1px] w-4 bg-pink-200" />
-              <span className="text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-pink-400 font-bold">CONFEITARIA</span>
+              <span className="text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-pink-400 font-bold">{appSettings.appSubtitle}</span>
               <div className="h-[1px] w-4 bg-pink-200" />
             </div>
           </div>
@@ -105,7 +123,7 @@ const AppContent = () => {
                  {userRole === 'admin' && (
                     <Link to="/admin">
                       <Button variant="ghost" size="icon" className="text-pink-600 hover:bg-pink-50">
-                        <LayoutDashboard className="w-5 h-5" />
+                        <Settings className="w-5 h-5" />
                       </Button>
                     </Link>
                  )}
@@ -165,8 +183,8 @@ const AppContent = () => {
             
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white flex items-center justify-center border-8 border-pink-100 shadow-2xl relative overflow-hidden group">
               <img 
-                src="https://instagram.fbsb8-2.fna.fbcdn.net/v/t51.82787-19/670890316_18463978237098931_1939052380474147205_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMxIn0&_nc_ht=instagram.fbsb8-2.fna.fbcdn.net&_nc_cat=107&_nc_oc=Q6cZ2gGSQIlauX8HC4IONqw2QlhR75_ruB9XeY9RjMfQWF956GXRsSdl4RlTtIvH-qMwZlESKXIu8Ptd9-Zh0VjwCQT4&_nc_ohc=fJOjnzz8Gq4Q7kNvwERdeH5&_nc_gid=OeJ8Kj6BVrbG0JNwZRyWbQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af3JzXFx1kzZeCM1sD-iZqfaNjSWnubzw8rbhZEsd3k7nA&oe=69E70A05&_nc_sid=7a9f4b" 
-                alt="D'GUSTAR Logo" 
+                src={appSettings.logoUrl} 
+                alt={`${appSettings.appName} Logo`}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
@@ -183,7 +201,7 @@ const AppContent = () => {
               transition={{ delay: 0.2 }}
               className="text-4xl font-black text-pink-800 tracking-tighter"
             >
-              D'GUSTAR
+              {appSettings.appName}
             </motion.h2>
             <motion.div 
               initial={{ opacity: 0 }}
@@ -192,7 +210,7 @@ const AppContent = () => {
               className="flex items-center justify-center gap-2 text-pink-400 font-bold tracking-widest text-xs uppercase"
             >
               <div className="h-[1px] w-6 bg-pink-200" />
-              CONFEITARIA
+              {appSettings.appSubtitle}
               <div className="h-[1px] w-6 bg-pink-200" />
             </motion.div>
             <motion.p 
@@ -201,7 +219,7 @@ const AppContent = () => {
               transition={{ delay: 0.4 }}
               className="text-sm text-pink-600/70 font-medium max-w-[280px] mx-auto leading-relaxed"
             >
-              Bolos, Salgados & Doces artesanais feitos com carinho para seus momentos especiais.
+              {appSettings.appDescription}
             </motion.p>
           </div>
         </div>
@@ -274,7 +292,11 @@ const AppContent = () => {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {filteredItems.map((item) => (
-              <ProductCard key={item.id} product={item} />
+              <ProductCard 
+                key={item.id} 
+                product={item} 
+                onAuthRequired={() => setIsAuthOpen(true)}
+              />
             ))}
           </motion.div>
         </AnimatePresence>
@@ -316,7 +338,12 @@ const AppContent = () => {
               >
                 <Instagram className="w-5 h-5" />
               </Button>
-              <Button variant="outline" size="icon" className="rounded-full border-pink-200 text-pink-600 hover:bg-pink-50">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full border-pink-200 text-pink-600 hover:bg-pink-50"
+                onClick={() => window.open('https://wa.me/5571983676361?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida.', '_blank')}
+              >
                 <Phone className="w-5 h-5" />
               </Button>
             </div>
@@ -326,6 +353,9 @@ const AppContent = () => {
               </p>
               <p className="text-xs text-pink-700 font-medium mt-2">
                 * Entrega: Uber Entrega (por conta do cliente) ou retirada no local.
+              </p>
+              <p className="text-xs text-pink-700 font-bold mt-2">
+                * Pedido mínimo: 15 unidades por item escolhido (Salgados/Doces).
               </p>
             </div>
           </div>

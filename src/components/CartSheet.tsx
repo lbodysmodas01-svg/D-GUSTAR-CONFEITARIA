@@ -92,6 +92,9 @@ export const CartSheet: React.FC<CartSheetProps> = ({ isOpen, onClose, onCheckou
         </ScrollArea>
 
         <SheetFooter className="mt-auto pt-4 flex flex-col gap-4">
+          <p className="text-[10px] text-pink-700 font-medium text-center bg-pink-50 py-1 rounded">
+            * Pedido mínimo de 15 unidades por item selecionado.
+          </p>
           <div className="flex justify-between items-center w-full text-lg font-bold">
             <span>Total</span>
             <span className="text-pink-600">R$ {total.toFixed(2)}</span>

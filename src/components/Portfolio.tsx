@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
+import { db, useAppLogo } from '../firebase';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { motion } from 'motion/react';
 import { Instagram, ExternalLink, Heart } from 'lucide-react';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 export const Portfolio: React.FC = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const appLogo = useAppLogo();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -32,7 +33,7 @@ export const Portfolio: React.FC = () => {
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
           <div className="w-20 h-20 rounded-full border-2 border-pink-500 p-1">
              <div className="w-full h-full rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold overflow-hidden">
-                <img src="https://instagram.fbsb8-2.fna.fbcdn.net/v/t51.82787-19/670890316_18463978237098931_1939052380474147205_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMxIn0&_nc_ht=instagram.fbsb8-2.fna.fbcdn.net&_nc_cat=107&_nc_oc=Q6cZ2gGSQIlauX8HC4IONqw2QlhR75_ruB9XeY9RjMfQWF956GXRsSdl4RlTtIvH-qMwZlESKXIu8Ptd9-Zh0VjwCQT4&_nc_ohc=fJOjnzz8Gq4Q7kNvwERdeH5&_nc_gid=OeJ8Kj6BVrbG0JNwZRyWbQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af3JzXFx1kzZeCM1sD-iZqfaNjSWnubzw8rbhZEsd3k7nA&oe=69E70A05&_nc_sid=7a9f4b" alt="D'GUSTAR" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img src={appLogo} alt="D'GUSTAR" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
              </div>
           </div>
           <div className="text-center">

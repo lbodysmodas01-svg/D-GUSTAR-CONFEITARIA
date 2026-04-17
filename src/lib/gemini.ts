@@ -1,7 +1,6 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
 const getApiKey = () => {
-  // Check process.env (defined in vite.config.ts)
   if (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) {
     return process.env.GEMINI_API_KEY;
   }
@@ -11,7 +10,7 @@ const getApiKey = () => {
 const apiKey = getApiKey();
 
 // Initialize the SDK
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+const genAI = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const chatWithGemini = async (message: string) => {
   if (!genAI) {
@@ -20,10 +19,11 @@ export const chatWithGemini = async (message: string) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent(message);
-    const response = await result.response;
-    return response.text() || "Sem resposta da IA.";
+    const response = await genAI.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: message,
+    });
+    return response.text || "Sem resposta da IA.";
   } catch (error) {
     console.error("Gemini Error:", error);
     return "Desculpe, ocorreu um erro ao processar sua solicitação.";
